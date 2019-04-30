@@ -6,5 +6,4 @@ namespace :import do
       Merchant.create(row.to_h)
     end
   end
-
 end

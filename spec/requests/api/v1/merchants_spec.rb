@@ -58,4 +58,17 @@ describe 'Merchants API' do
     expect(Merchant.count).to eq(0)
     expect{Merchant.find(merchant.id)}.to raise_error(ActiveRecord::RecordNotFound)
   end
+
+  it "can search for a merchant based on the id" do
+    merchant = create(:merchant, name: "Mike Dao")
+    merchant_two = create(:merchant)
+    merchant_three = create(:merchant)
+
+    get "/api/v1/merchants/find?id=#{merchant.id}"
+
+    found_merchant = JSON.parse(response.body)
+
+    expect(found_merchant["id"]).to eq(merchant.id)
+    expect(found_merchant["name"]).to eq(merchant.name)
+  end
 end
