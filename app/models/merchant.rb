@@ -1,4 +1,5 @@
 class Merchant < ApplicationRecord
+  has_many :items
   def self.find_all(params)
     if params[:id]
       Merchant.all.where(id: params[:id])
