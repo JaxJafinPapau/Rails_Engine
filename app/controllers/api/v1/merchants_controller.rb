@@ -1,10 +1,9 @@
 class Api::V1::MerchantsController < ApplicationController
   def index
-    render json: MerchantSerializer.new(Merchant.all)
+      render json: MerchantSerializer.new(Merchant.find_all(params))
   end
 
   def show
-    # Unable to get DateTime to play nice with motherfucking postgresql.
     # Refactor this to model.
     if params[:id]
       render json: MerchantSerializer.new(Merchant.find(params[:id]))
@@ -17,6 +16,7 @@ class Api::V1::MerchantsController < ApplicationController
     end
   end
 
+  #These methods could be used for an authorized user to edit the api by passing params?
   # def create
   #   render json: Merchant.create(create_params)
   # end

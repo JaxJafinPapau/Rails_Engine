@@ -33,6 +33,7 @@ describe 'Merchants API' do
 
     found_merchant = JSON.parse(response.body)
 
+    expect(response).to be_successful
     expect(found_merchant["data"]["attributes"]["id"]).to eq(merchant.id)
     expect(found_merchant["data"]["attributes"]["name"]).to eq(merchant.name)
   end
@@ -63,10 +64,9 @@ describe 'Merchants API' do
     expect(found_merchant["data"]["attributes"]["name"]).to eq(merchant.name)
   end
 
-  xit "can search for a merchant by updated_at" do
-    merchant = create(:merchant, name: "Josh Mejia")
+  it "can search for a merchant by updated_at" do
+    merchant = create(:merchant, name: "Josh Mejia", updated_at: "2012-03-27T14:54:02.000Z")
     merchant_two = create(:merchant)
-    merchant.update!(name: "Ondrea Chadburn")
 
     get "/api/v1/merchants/find?updated_at=#{merchant.updated_at}"
 
@@ -74,6 +74,36 @@ describe 'Merchants API' do
 
     expect(found_merchant["data"]["attributes"]["id"]).to eq(merchant.id)
     expect(found_merchant["data"]["attributes"]["name"]).to eq(merchant.name)
+  end
+
+  it "can find_all merchants by id and return an array" do
+    merchant_1 = create(:merchant, name: "Jeremy Bennett")
+    merchant_2 = create(:merchant)
+
+    get "/api/v1/merchants/find_all?id=#{merchant_1.id}"
+
+
+    found_merchants = JSON.parse(response.body)
+
+    expect(response).to be_successful
+    expect(found_merchants["data"]).to be_an(Array)
+    expect(found_merchants["data"].first["id"].to_i).to eq(merchant_1.id)
+  end
+
+  it "can find_all merchants by name and return a serialized array" do
+    merchant_1 = create(:merchant, name: "Jeremy Bennett")
+    merchant_1 = create(:merchant, name: "Jeremy Bennett")
+    merchant_2 = create(:merchant)
+
+    get "/api/v1/merchants/find_all?name=#{merchant_1.name}"
+
+
+    found_merchants = JSON.parse(response.body)
+
+    expect(response).to be_successful
+    expect(found_merchants["data"]).to be_an(Array)
+    expect(found_merchants["data"].count).to eq(2)
+    expect(found_merchants["data"].first["attributes"]["name"]).to eq(merchant_1.name)
   end
   # it "can create a merchant" do
   #   merchant_params = {name: "Mike Dao"}
