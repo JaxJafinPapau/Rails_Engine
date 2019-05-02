@@ -1,6 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe Merchant, type: :model do
+  context "relationships" do
+    it {should have_many(:items)}
+  end
   context "find_all" do
     it "can find_all by id" do
       merchant = create(:merchant)

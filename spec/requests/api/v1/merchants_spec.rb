@@ -97,7 +97,6 @@ describe 'Merchants API' do
 
     get "/api/v1/merchants/find_all?name=#{merchant_1.name}"
 
-
     found_merchants = JSON.parse(response.body)
 
     expect(response).to be_successful
