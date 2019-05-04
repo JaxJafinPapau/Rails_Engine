@@ -6,18 +6,16 @@ class Item < ApplicationRecord
       all.where(id: params[:id])
     elsif params[:name] && !params[:id]
       all.where(name: params[:name])
-    # elsif params[:description] && !params[:id]
-    #   all.where(description: params[:description])
-    # elsif params[:unit_price] && !params[:id]
-    #   all.where(unit_price: params[:unit_price])
-    # elsif params[:merchant_id] && !params[:id]
-    #   all.where(merchant_id: params[:merchant_id])
-    # elsif params[:merchant_id] && !params[:id]
-    #   all.where(merchant_id: params[:merchant_id])
-    # elsif params[:created_at] && !params[:id]
-    #   all.where(created_at: params[:created_at])
-    # elsif params[:updated_at] && !params[:id]
-    #   all.where(updated_at: params[:updated_at])
+    elsif params[:description] && !params[:id]
+      all.where(description: params[:description])
+    elsif params[:unit_price] && !params[:id]
+      all.where(unit_price: params[:unit_price])
+    elsif params[:merchant_id] && !params[:id]
+      all.where(merchant_id: params[:merchant_id])
+    elsif params[:created_at] && !params[:id]
+      all.where(created_at: params[:created_at])
+    elsif params[:updated_at] && !params[:id]
+      all.where(updated_at: params[:updated_at])
     else
       all
     end
@@ -34,6 +32,10 @@ class Item < ApplicationRecord
       find_by(unit_price: params[:unit_price])
     elsif params[:merchant_id] && !params[:id]
       find_by(merchant_id: params[:merchant_id])
+    elsif params[:created_at] && !params[:id]
+      find_by(created_at: params[:created_at])
+    elsif params[:updated_at] && !params[:id]
+      find_by(updated_at: params[:updated_at])
     end
   end
 end
