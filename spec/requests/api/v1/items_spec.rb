@@ -41,4 +41,22 @@ describe "Items API", type: :request do
     expect(found_item["data"]["attributes"]["id"]).to eq(item_1.id)
     expect(found_item["data"]["attributes"]["name"]).to eq(item_1.name)
   end
+
+  it "can search for an item based on the name" do
+    item_1 = create(:item, name: "target item", merchant_id: @merchant.id)
+    item_2 = create(:item, merchant_id: @merchant.id)
+    item_3 = create(:item, merchant_id: @merchant.id)
+
+    get "/api/v1/items/find?name=#{item_1.name}"
+
+    found_item = JSON.parse(response.body)
+
+    expect(response).to be_successful
+    expect(found_item["data"]["attributes"]["id"]).to eq(item_1.id)
+    expect(found_item["data"]["attributes"]["name"]).to eq(item_1.name)
+  end
+
+  it "can search for an item based on the description" do
+
+  end
 end
