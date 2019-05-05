@@ -18,11 +18,14 @@ RSpec.describe Transaction, type: :model do
 
   describe "search" do
     it "should return the first transaction with matching id" do
-      transaction = create(:transaction)
+      merch_id = create(:merchant).id
+      cust_id = create(:customer).id
+      inv_id = create(:invoice, merchant_id: merch_id, customer_id: cust_id).id
+      transaction = create(:transaction, invoice_id: inv_id)
 
       params = {id: transaction.id}
 
-      expect(Customer.search(params).id).to eq(transaction.id)
+      expect(Transaction.search(params).id).to eq(transaction.id)
     end
   end
 end

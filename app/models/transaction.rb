@@ -7,8 +7,6 @@ class Transaction < ApplicationRecord
       all.where(invoice_id: params[:invoice_id])
     elsif params[:credit_card_number] && !params[:id]
       all.where(credit_card_number: params[:credit_card_number])
-    elsif params[:credit_card_expiration_date] && !params[:id]
-      all.where(credit_card_expiration_date: params[:credit_card_expiration_date])
     elsif params[:result] && !params[:id]
       all.where(result: params[:result])
     elsif params[:created_at] && !params[:id]
@@ -27,8 +25,6 @@ class Transaction < ApplicationRecord
       find_by(invoice_id: params[:invoice_id])
     elsif params[:credit_card_number] && !params[:id]
       find_by(credit_card_number: params[:credit_card_number])
-    elsif params[:credit_card_expiration_date] && !params[:id]
-      find_by(credit_card_expiration_date: params[:credit_card_expiration_date])
     elsif params[:result] && !params[:id]
       find_by(result: params[:result])
     elsif params[:created_at] && !params[:id]
