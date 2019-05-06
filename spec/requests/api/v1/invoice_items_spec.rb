@@ -168,4 +168,15 @@ describe "InvoiceItems API", type: :request do
     expect(found_invoice_items["data"]).to be_an(Array)
     expect(found_invoice_items["data"].first["attributes"]["id"]).to eq(@invoice_item_2.id)
   end
+
+  describe "relational endpoints" do
+    it "can return its invoice" do
+      get "/api/v1/invoice_items/#{@invoice_item.id}/invoice"
+
+      found_invoice = JSON.parse(response.body)
+
+      expect(response).to be_successful
+      expect(found_invoice["data"].first["attributes"]["id"].to_i).to eq(@invoice.id)
+    end
+  end
 end

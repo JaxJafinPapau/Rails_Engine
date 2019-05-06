@@ -19,11 +19,27 @@ Rails.application.routes.draw do
         resources :items, only: [:index]
         resources :invoices, only: [:index]
       end
-      resources :items, only: [:index, :show]
-      resources :customers, only: [:index, :show]
-      resources :transactions, only: [:index, :show]
-      resources :invoices, only: [:index, :show]
-      resources :invoice_items, only: [:index, :show]
+      resources :items, only: [:index, :show] do
+        get "/invoice_items", to: "invoice_items#index"
+        get "/merchant", to: "merchants#show"
+      end
+      resources :customers, only: [:index, :show] do
+        get "/invoices", to: "invoices#index"
+        get "/transactions", to: "transactions#index"
+      end
+      resources :transactions, only: [:index, :show] do
+        get "/invoice", to: "invoices#show"
+      end
+      resources :invoices, only: [:index, :show] do
+        resources :items, only: [:index]
+        resources :invoice_items, only: [:index]
+        resources :transactions, only: [:index]
+        get "/merchant", to: "merchants#show"
+        get "/customer", to: "customers#show"
+      end
+      resources :invoice_items, only: [:index, :show] do
+        get "/invoice", to: "invoices#show"
+      end
     end
   end
 

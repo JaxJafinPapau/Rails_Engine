@@ -132,4 +132,31 @@ describe 'Customers API' do
     expect(found_customers["data"].count).to eq(2)
     expect(found_customers["data"].first["attributes"]["last_name"]).to eq(customer_1.last_name)
   end
+
+  describe "relational endpoints" do
+    it "can return its invoices" do
+      customer = create(:customer)
+      merchant = create(:merchant)
+      invoice = create(:invoice, customer_id: customer.id, merchant_id: merchant.id)
+
+      get "/api/v1/customers/#{customer.id}/invoices"
+
+      found_invoices = JSON.parse(response.body)
+      expect(response).to be_successful
+      expect(found_invoices["data"].first["attributes"]["id"]).to eq(invoice.id)
+    end
+
+    it "can return its transactions" do
+      customer = create(:customer)
+      merchant = create(:merchant)
+      invoice = create(:invoice, customer_id: customer.id, merchant_id: merchant.id)
+      transaction = create(:transaction, invoice_id: invoice.id)
+
+      get "/api/v1/customers/#{customer.id}/transactions"
+
+      found_transactions = JSON.parse(response.body)
+      expect(response).to be_successful
+      expect(found_transactions["data"].first["attributes"]["id"]).to eq(transaction.id)
+    end
+  end
 end
