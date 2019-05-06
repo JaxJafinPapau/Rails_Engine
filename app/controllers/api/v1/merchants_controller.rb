@@ -13,6 +13,10 @@ class Api::V1::MerchantsController < ApplicationController
       render json: MerchantSerializer.new(Merchant.find_by(created_at: params[:created_at]))
     elsif params[:updated_at] && !params[:id]
       render json: MerchantSerializer.new(Merchant.find_by(updated_at: params[:updated_at]))
+    elsif params[:invoice_id] && !params[:id]
+      render json: MerchantSerializer.new(Merchant.joins(:invoices).where("invoices.id = ?", params[:invoice_id]))
+    elsif params[:item_id] && !params[:id]
+      render json: MerchantSerializer.new(Merchant.joins(:items).where("items.id = ?", params[:item_id]))
     end
   end
 

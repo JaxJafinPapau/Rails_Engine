@@ -204,4 +204,16 @@ describe "Transactions API", type: :request do
     expect(found_transactions["data"]).to be_an(Array)
     expect(found_transactions["data"].first["attributes"]["id"]).to eq(transaction_1.id)
   end
+
+  describe "relational endpoints" do
+    it "can return its invoice" do
+      transaction_1 = create(:transaction, invoice_id: @invoice.id)
+
+      get "/api/v1/transactions/#{transaction_1.id}/invoice"
+
+      found_invoice = JSON.parse(response.body)
+      expect(response).to be_successful
+      expect(found_invoice["data"].first["attributes"]["id"]).to eq(@invoice.id)
+    end
+  end
 end

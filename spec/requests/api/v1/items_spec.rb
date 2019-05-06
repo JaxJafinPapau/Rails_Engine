@@ -230,4 +230,30 @@ describe "Items API", type: :request do
     expect(found_items["data"]).to be_an(Array)
     expect(found_items["data"].first["attributes"]["id"]).to eq(item_1.id)
   end
+
+  describe "relational endpoints" do
+    it "can return its invoice_items" do
+      item_1 = create(:item, merchant_id: @merchant.id)
+      customer = create(:customer)
+      invoice = create(:invoice, customer_id: customer.id, merchant_id: @merchant.id)
+      invoice_item = create(:invoice_item, item_id: item_1.id, invoice_id: invoice.id)
+
+      get "/api/v1/items/#{item_1.id}/invoice_items"
+
+      found_invoice_item = JSON.parse(response.body)
+      expect(response).to be_successful
+      expect(found_invoice_item["data"].first["attributes"]["id"]).to eq(invoice_item.id)
+    end
+
+    it "can return its merchant" do
+      item_1 = create(:item, merchant_id: @merchant.id)
+
+      get "/api/v1/items/#{item_1.id}/merchant"
+
+      found_merchant = JSON.parse(response.body)
+
+      expect(response).to be_successful
+      expect(found_merchant["data"].first["attributes"]["id"]).to eq(@merchant.id)
+    end
+  end
 end

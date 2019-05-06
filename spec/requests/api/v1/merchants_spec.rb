@@ -104,6 +104,43 @@ describe 'Merchants API' do
     expect(found_merchants["data"].count).to eq(2)
     expect(found_merchants["data"].first["attributes"]["name"]).to eq(merchant_1.name)
   end
+
+
+  context 'relational endpoints' do
+    before :each do
+      @merchant = create(:merchant)
+      @merchant_2 = create(:merchant)
+      @customer = create(:customer)
+      @customer_2 = create(:customer)
+      @item = create(:item, merchant_id: @merchant.id)
+      @item_2 = create(:item, merchant_id: @merchant_2.id)
+      @invoice = create(:invoice, merchant_id: @merchant.id, customer_id: @customer.id)
+      @invoice_2 = create(:invoice, merchant_id: @merchant_2.id, customer_id: @customer_2.id, status: "shipped", created_at: "2012-03-09T08:57:21.000Z", updated_at: "2013-03-09T08:57:21.000Z")
+      @invoice_item = create(:invoice_item, item_id: @item.id, invoice_id: @invoice.id)
+      @invoice_item_2 = create(:invoice_item, item_id: @item_2.id, invoice_id: @invoice_2.id, quantity: 2, created_at: "2012-03-09T08:57:21.000Z", updated_at: "2013-03-09T08:57:21.000Z")
+      @invoice_item_3 = create(:invoice_item, item_id: @item_2.id, invoice_id: @invoice_2.id, quantity: 2, created_at: "2012-03-09T08:57:21.000Z", updated_at: "2013-03-09T08:57:21.000Z")
+    end
+    it "should have items" do
+
+      get "/api/v1/merchants/#{@merchant.id}/items"
+
+      expect(response).to be_successful
+
+      items = JSON.parse(response.body)
+
+      expect(items["data"].first["attributes"]["id"].to_i).to eq(@item.id)
+    end
+
+    it "should have invoices" do
+      get "/api/v1/merchants/#{@merchant.id}/invoices"
+
+      expect(response).to be_successful
+
+      invoices = JSON.parse(response.body)
+
+      expect(invoices["data"].first["attributes"]["id"].to_i).to eq(@invoice.id)
+    end
+  end
   # it "can create a merchant" do
   #   merchant_params = {name: "Mike Dao"}
   #

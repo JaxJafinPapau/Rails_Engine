@@ -1,5 +1,6 @@
 class Merchant < ApplicationRecord
   has_many :items
+  has_many :invoices
   def self.find_all(params)
     if params[:id]
       all.where(id: params[:id])

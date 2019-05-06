@@ -156,4 +156,73 @@ describe "Invoices API", type: :request do
     expect(found_invoices["data"]).to be_an(Array)
     expect(found_invoices["data"].first["attributes"]["id"]).to eq(@invoice_2.id)
   end
+
+  context 'relational endpoints' do
+    before :each do
+      @relational_merchant = create(:merchant)
+      @relational_merchant_2 = create(:merchant)
+      @relational_customer = create(:customer)
+      @relational_customer_2 = create(:customer)
+      @relational_item = create(:item, merchant_id: @relational_merchant.id)
+      @relational_item_2 = create(:item, merchant_id: @relational_merchant_2.id)
+      @relational_invoice = create(:invoice, merchant_id: @relational_merchant.id, customer_id: @relational_customer.id)
+      @relational_invoice_2 = create(:invoice, merchant_id: @relational_merchant_2.id, customer_id: @relational_customer_2.id, status: "shipped", created_at: "2012-03-09T08:57:21.000Z", updated_at: "2013-03-09T08:57:21.000Z")
+      @relational_invoice_item = create(:invoice_item, item_id: @relational_item.id, invoice_id: @relational_invoice.id)
+      @relational_invoice_item_2 = create(:invoice_item, item_id: @relational_item_2.id, invoice_id: @relational_invoice_2.id, quantity: 2, created_at: "2012-03-09T08:57:21.000Z", updated_at: "2013-03-09T08:57:21.000Z")
+      @relational_invoice_item_3 = create(:invoice_item, item_id: @relational_item_2.id, invoice_id: @relational_invoice_2.id, quantity: 2, created_at: "2012-03-09T08:57:21.000Z", updated_at: "2013-03-09T08:57:21.000Z")
+      @relational_transaction = create(:transaction, invoice_id: @relational_invoice.id)
+      @relational_transaction_2 = create(:transaction, invoice_id: @relational_invoice_2.id)
+      @relational_transaction_3 = create(:transaction, invoice_id: @relational_invoice_2.id)
+    end
+    it "should have items" do
+
+      get "/api/v1/invoices/#{@relational_invoice.id}/items"
+
+      expect(response).to be_successful
+
+      items = JSON.parse(response.body)
+
+      expect(items["data"].first["attributes"]["id"].to_i).to eq(@relational_item.id)
+    end
+
+    it "should have invoice_items" do
+      get "/api/v1/invoices/#{@relational_invoice.id}/invoice_items"
+
+      expect(response).to be_successful
+
+      invoice_items = JSON.parse(response.body)
+
+      expect(invoice_items["data"].first["attributes"]["id"].to_i).to eq(@relational_invoice_item.id)
+    end
+
+    it "should have transactions" do
+      get "/api/v1/invoices/#{@relational_invoice.id}/transactions"
+
+      expect(response).to be_successful
+
+      transactions = JSON.parse(response.body)
+
+      expect(transactions["data"].first["attributes"]["id"].to_i).to eq(@relational_transaction.id)
+    end
+
+    it "should have customer" do
+      get "/api/v1/invoices/#{@relational_invoice.id}/customer"
+
+      expect(response).to be_successful
+
+      customers = JSON.parse(response.body)
+
+      expect(customers["data"].first["attributes"]["id"].to_i).to eq(@relational_customer.id)
+    end
+
+    it "should have merchants" do
+      get "/api/v1/invoices/#{@relational_invoice.id}/merchant"
+
+      expect(response).to be_successful
+
+      merchants = JSON.parse(response.body)
+
+      expect(merchants["data"].first["attributes"]["id"].to_i).to eq(@relational_merchant.id)
+    end
+  end
 end

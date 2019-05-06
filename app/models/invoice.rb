@@ -2,6 +2,9 @@ class Invoice < ApplicationRecord
   belongs_to :customer
   belongs_to :merchant
 
+  has_many :invoice_items
+  has_many :transactions
+
   def self.find_all(params)
     if params[:id]
       all.where(id: params[:id])
@@ -33,6 +36,10 @@ class Invoice < ApplicationRecord
       find_by(created_at: params[:created_at])
     elsif params[:updated_at] && !params[:id]
       find_by(updated_at: params[:updated_at])
+    elsif params[:invoice_item_id] && !params[:id]
+      joins(:invoice_items).where("invoice_items.id =?", params[:invoice_item_id])
+    elsif params[:transaction_id] && !params[:id]
+      joins(:transactions).where("transactions.id = ?", params[:transaction_id])
     end
   end
 end
